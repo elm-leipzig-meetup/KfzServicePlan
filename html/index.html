@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link href="pub/screen.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body id="app">
+    <div id='hpDiv'></div>
+    <script src="pub/ServiceR1200R.js"></script>
+    <script>
+        var app = Elm.ServiceR1200R.init({node : document.getElementById('hpDiv')});
+        app.ports.getRandom.subscribe(function (obj) {
+          	var min=10000;
+            var max=2147483647;
+            var random = Math.floor(Math.random() * (+max - +min)) + +min
+            app.ports.setRandom.send(random);
+        });
+    </script>
+  </body>
+</html>

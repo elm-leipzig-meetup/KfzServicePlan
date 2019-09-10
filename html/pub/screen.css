@@ -1,0 +1,79 @@
+@media print {
+    .no-print, .no-print * {
+        display: none !important;
+    }
+    body {
+        font-size: 9pt !important;
+    }
+    .appDiv {
+      height: 100% !important;
+    }
+    .planDiv {
+      height: 100% !important;
+    }
+}
+
+.appDiv {
+  width: 800px;
+  height: 600px;
+}
+
+.planDiv {
+  overflow-y: auto;
+  height: 500px;
+}
+
+body {
+    font-family: monospace;
+    font-size: 15pt;
+}
+
+input, select, textarea {
+    margin: 1px;
+    padding: 5px;
+    border:1px solid #cccccc;
+}
+
+input[type="number"] {
+    width: 50pt;
+}
+
+input[type="text"], input[type="password"], select {
+    background-clip: padding-box;
+    border: 1px solid #cccccc;
+    padding: 4px ;
+}
+
+input[type="url"] {
+    width: 60%;
+}
+
+label {
+    width: 170pt;
+    display: inline-block;
+}
+
+input[type="button"] {
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid silver;
+    padding: 0px 12px;
+    background-image: linear-gradient(darkgray, #EEEEEE);
+    display: inline-block;
+    cursor: pointer;
+}
+
+ul li {
+    height: 30px;
+}
+ul {
+    padding-left: 20px;
+    list-style: none;
+    padding-bottom: 20px;
+}
+ul li:before {
+    content: "❏";
+    font-size: 2em;
+    margin-left: -18px;
+    padding-right: 10px;
+}
