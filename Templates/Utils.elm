@@ -24,7 +24,39 @@ getOption key sel label = Html.option [ Attr.value key, Attr.selected (key==sel)
 
 getServiceApp: O.Model -> Html Msg
 getServiceApp model =
-  Html.div [ Attr.class "appDiv" ][
+  let
+    content = if model.session.showKonfig
+      then getKonfigForm model
+      else getPlanDiv model
+  in
+    Html.div [ Attr.class "appDiv" ] content
+
+getKonfigForm: O.Model -> List (Html Msg)
+getKonfigForm model = [
+    Html.div [ Attr.class "no-print" ][
+      getActionButton "Schließen" True TO.ToggleKonfig
+    ], Html.div [ Attr.class "no-print" ][
+      Html.label [ Attr.for "year" ][ Html.text "Kaufjahr:" ]
+      , Html.input [
+        Attr.id "year"
+        , Attr.type_ "number"
+        , Attr.value (String.fromInt (model.config.buyingYear))
+        , Ev.onInput TO.SetBuyingYear
+      ][ ]
+    ], Html.div [ Attr.class "no-print" ][
+      Html.label [ Attr.for "dist" ][ Html.text "Laufleistung (km):" ]
+      , Html.input [
+        Attr.id "dist"
+        , Attr.type_ "number"
+        , Attr.value (String.fromInt model.config.distance)
+        , Ev.onInput TO.SetDistance
+      ][ ]
+    ], Html.div [ Attr.class "no-print" ][
+    ]
+  ]
+
+getPlanDiv: O.Model -> List (Html Msg)
+getPlanDiv model = [
     Html.div [ Attr.class "no-print" ][
       Html.label [ Attr.for "age" ][ Html.text "Alter (Jahre):" ]
       , Html.input [
@@ -38,18 +70,20 @@ getServiceApp model =
       , Html.input [
         Attr.id "dist"
         , Attr.type_ "number"
+        , Attr.disabled True
         , Attr.value (String.fromInt model.config.distance)
         , Ev.onInput TO.SetDistance
       ][ ]
     ], Html.div [][
-      getActionButton "Wartungsplan" True TO.ToggleServicePlan
+      getActionButton "Konfiguration" True TO.ToggleKonfig
+      , getActionButton "Wartungsplan" (not model.session.showServicePlan) TO.ToggleServicePlan
     ], getServicePlan model
   ]
 
 getServicePlan: O.Model -> Html Msg
 getServicePlan model =
   let
-    serviceList = DU.getActServicePlan model.session.currentYear model.session.roundedDist model.servicePlan
+    serviceList = DU.getActServicePlan (model.session.currentYear - model.config.buyingYear) model.session.roundedDist model.servicePlan
   in
     if model.session.showServicePlan
       then Html.div [ Attr.class "planDiv" ] [

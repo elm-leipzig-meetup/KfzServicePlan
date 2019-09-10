@@ -10,6 +10,9 @@ type Msg =
   NoOp
   | NoOpStr String
   | NoOpInt Int
+  | ReadDataFromPublish (Int, Config, List ServicePlan)
   | SetYear Posix
   | SetDistance String
+  | SetBuyingYear String
   | ToggleServicePlan
+  | ToggleKonfig

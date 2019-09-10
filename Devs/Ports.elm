@@ -1,7 +1,7 @@
 port module Devs.Ports exposing (..)
 
-import Devs.Objects as O exposing ( Model )
+import Devs.Objects as O exposing ( Config, ServicePlan )
 
-port getRandom: O.Model -> Cmd msg
+port pushDataToStore: (Config, List ServicePlan, Bool) -> Cmd msg
 
-port setRandom: (Int -> msg) -> Sub msg
+port setDataFromStore: ((Int, Config, List ServicePlan) -> msg) -> Sub msg

@@ -1,6 +1,6 @@
 port module ServiceR1200R exposing (..)
 
-import Devs.Ports as P exposing (setRandom)
+import Devs.Ports as P
 
 import Browser exposing (..)
 import Html exposing (..)
@@ -33,12 +33,12 @@ main =
 
 subscriptions : O.Model -> Sub TO.Msg
 subscriptions model = Sub.batch [
-    P.setRandom TO.NoOpInt
+    P.setDataFromStore TO.ReadDataFromPublish
   ]
 
 init : ( O.Model, Cmd Msg )
 init =  ( O.initialModel, Cmd.batch [
-      P.getRandom O.initialModel,
+      P.pushDataToStore (initialModel.config, initialModel.servicePlan, True),
       Task.perform TO.SetYear T.now
     ]
   )

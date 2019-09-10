@@ -2,11 +2,18 @@ module Devs.Utils exposing ( getServicePlan, getActServicePlan, roundedDistance)
 
 import List.Extra as ListE exposing ( .. )
 import Round as R
+import Random
 
 import Debug exposing (log)
 
 import Devs.Objects as O exposing ( Model, ServicePlan, Todo )
 import Devs.TypeObject as TO exposing ( Msg )
+
+getSeed: O.Model -> Random.Seed
+getSeed model =
+  case model.session.currentSeed of
+      Just seed ->  seed
+      Nothing -> Random.initialSeed model.session.random
 
 getActServicePlan: Int -> Int -> List O.ServicePlan -> List O.Todo
 getActServicePlan year dist plan =
