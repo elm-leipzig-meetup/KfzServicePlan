@@ -17,10 +17,10 @@ update msg model =
         NoOp -> ( model , Cmd.none)
         NoOpStr val -> ( model , Cmd.none)
         NoOpInt val -> ( model , Cmd.none)
-        SetYear ts -> ( { model | currentYear = (T.toYear T.utc ts), servicePlan = DU.getServicePlan, roundedDist = DU.roundedDistance model.distance } , Cmd.none )
+        SetYear ts -> ( { model | session = O.setSession model (Just (T.toYear T.utc ts)) Nothing (Just (DU.roundedDistance model.config.distance)), servicePlan = DU.getServicePlan } , Cmd.none )
         SetDistance dist ->
           let
-            distance = Maybe.withDefault model.distance (String.toInt dist)
+            distance = Maybe.withDefault model.config.distance (String.toInt dist)
           in
-            ( { model | distance = distance, roundedDist = DU.roundedDistance distance }, Cmd.none )
-        ToggleServicePlan -> ( { model | showServicePlan = not model.showServicePlan }, Cmd.none )
+            ( { model | config = O.setConfig model Nothing (Just distance), session = O.setSession model Nothing Nothing (Just (DU.roundedDistance distance)) }, Cmd.none )
+        ToggleServicePlan -> ( { model | session = O.setSession model Nothing (Just (not model.session.showServicePlan)) Nothing }, Cmd.none )

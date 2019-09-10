@@ -31,14 +31,14 @@ getServiceApp model =
         Attr.id "age"
         , Attr.type_ "number"
         , Attr.disabled True
-        , Attr.value (String.fromInt (model.currentYear - model.buyingYear))
+        , Attr.value (String.fromInt (model.session.currentYear - model.config.buyingYear))
       ][ ]
     ], Html.div [ Attr.class "no-print" ][
       Html.label [ Attr.for "dist" ][ Html.text "Laufleistung (km):" ]
       , Html.input [
         Attr.id "dist"
         , Attr.type_ "number"
-        , Attr.value (String.fromInt model.distance)
+        , Attr.value (String.fromInt model.config.distance)
         , Ev.onInput TO.SetDistance
       ][ ]
     ], Html.div [][
@@ -49,11 +49,11 @@ getServiceApp model =
 getServicePlan: O.Model -> Html Msg
 getServicePlan model =
   let
-    serviceList = DU.getActServicePlan model.currentYear model.roundedDist model.servicePlan
+    serviceList = DU.getActServicePlan model.session.currentYear model.session.roundedDist model.servicePlan
   in
-    if model.showServicePlan
+    if model.session.showServicePlan
       then Html.div [ Attr.class "planDiv" ] [
-          Html.h2 [][ Html.text ("Serviceplan für Jahr " ++ String.fromInt model.currentYear ++ " und km " ++ String.fromInt model.roundedDist) ]
+          Html.h2 [][ Html.text ("Serviceplan für Jahr " ++ String.fromInt model.session.currentYear ++ " und km " ++ String.fromInt model.session.roundedDist) ]
           , Html.ol [] (List.map showServiceItem serviceList)
         ]
       else Html.text ""
