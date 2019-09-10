@@ -7,8 +7,13 @@
     }
     .appDiv {
       height: 100% !important;
+      border-style: none !important;
+      box-shadow: none !important;
     }
     .planDiv {
+      height: 100% !important;
+    }
+    ol {
       height: 100% !important;
     }
 }
@@ -16,64 +21,80 @@
 .appDiv {
   width: 800px;
   height: 600px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -ms-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -o-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  border: 1px solid #9ea5a5;
+  padding: 5px;
 }
 
 .planDiv {
-  overflow-y: auto;
   height: 500px;
 }
 
 body {
-    font-family: monospace;
-    font-size: 15pt;
+  font-family: monospace;
+  font-size: 15pt;
 }
 
 input, select, textarea {
-    margin: 1px;
-    padding: 5px;
-    border:1px solid #cccccc;
+  margin: 1px;
+  padding: 5px;
+  border:1px solid #cccccc;
 }
 
 input[type="number"] {
-    width: 50pt;
+  width: 50pt;
 }
 
 input[type="text"], input[type="password"], select {
-    background-clip: padding-box;
-    border: 1px solid #cccccc;
-    padding: 4px ;
+  background-clip: padding-box;
+  border: 1px solid #cccccc;
+  padding: 4px ;
 }
 
 input[type="url"] {
-    width: 60%;
+  width: 60%;
 }
 
 label {
-    width: 170pt;
-    display: inline-block;
+  width: 170pt;
+  display: inline-block;
 }
 
 input[type="button"] {
-    height: 30px;
-    border-radius: 5px;
-    border: 1px solid silver;
-    padding: 0px 12px;
-    background-image: linear-gradient(darkgray, #EEEEEE);
-    display: inline-block;
-    cursor: pointer;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid silver;
+  padding: 0px 12px;
+  background-image: linear-gradient(darkgray, #EEEEEE);
+  display: inline-block;
+  cursor: pointer;
+}
+
+ol {
+  overflow-y: auto;
+  height: 420px;
 }
 
 ul li {
-    height: 30px;
+  height: 30px;
 }
 ul {
-    padding-left: 20px;
-    list-style: none;
-    padding-bottom: 20px;
+  padding-left: 20px;
+  list-style: none;
+  padding-bottom: 20px;
 }
 ul li:before {
-    content: "❏";
-    font-size: 2em;
-    margin-left: -18px;
-    padding-right: 10px;
+  content: "❏";
+  font-size: 2em;
+  margin-left: -18px;
+  padding-right: 10px;
 }

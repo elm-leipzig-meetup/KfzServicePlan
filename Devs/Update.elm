@@ -17,7 +17,7 @@ update msg model =
         NoOp -> ( model , Cmd.none)
         NoOpStr val -> ( model , Cmd.none)
         NoOpInt val -> ( model , Cmd.none)
-        SetYear ts -> ( { model | session = O.setSession model (Just (T.toYear T.utc ts)) Nothing (Just (DU.roundedDistance model.config.distance)), servicePlan = DU.getServicePlan } , Cmd.none )
+        SetYear ts -> ( { model | session = O.setSession model (Just ((T.toYear T.utc ts))) Nothing (Just (DU.roundedDistance model.config.distance)), servicePlan = DU.getServicePlan } , Cmd.none )
         SetDistance dist ->
           let
             distance = Maybe.withDefault model.config.distance (String.toInt dist)
