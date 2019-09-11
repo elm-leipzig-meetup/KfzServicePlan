@@ -3,6 +3,7 @@ module Templates.Utils exposing ( getServiceApp )
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
 import Html.Events as Ev exposing ( onClick, onInput )
+import List.Extra as ListE
 
 import Devs.Objects as O exposing ( Model, ServicePlan )
 import Devs.TypeObject as TO exposing ( .. )
@@ -29,18 +30,44 @@ getServiceApp model =
     content = if model.session.showKonfig
       then getKonfigForm model
       else getPlanDiv model
+    confirmForm = getConfirmDiv model
     spEditForm = case model.session.showEditServicePlan of
       True -> getSpEditForm (List.filter (\i -> i.uuid == Maybe.withDefault "" model.session.spForEdit) model.servicePlan |> List.head)
       False -> Html.text ""
   in
-    Html.div [ Attr.class "appDiv" ] (List.append content [spEditForm])
+    Html.div [ Attr.class "appDiv" ] (List.append content [spEditForm, confirmForm])
+
+getConfirmDiv: Model -> Html Msg
+getConfirmDiv model =
+  let
+    stUuid = Maybe.withDefault Nothing (ListE.getAt 0 model.session.uuidForConfirmDelete)
+    tdUuid = Maybe.withDefault Nothing (ListE.getAt 1 model.session.uuidForConfirmDelete)
+    sUuid = Maybe.withDefault Nothing (ListE.getAt 2 model.session.uuidForConfirmDelete)
+    event = if sUuid /= Nothing && tdUuid /= Nothing && stUuid /= Nothing then TO.RemoveStuff (Maybe.withDefault "" stUuid) (Maybe.withDefault "" tdUuid) (Maybe.withDefault "" sUuid)
+      else if sUuid == Nothing && tdUuid /= Nothing && stUuid /= Nothing then TO.RemoveTodo (Maybe.withDefault "" stUuid) (Maybe.withDefault "" tdUuid)
+      else if sUuid == Nothing && tdUuid == Nothing && stUuid /= Nothing then TO.RemoveServicePlan (Maybe.withDefault "" stUuid)
+      else TO.NoOp
+    msg = if sUuid /= Nothing && tdUuid /= Nothing && stUuid /= Nothing then "Soll der Materialeintrag gelöscht werden?"
+      else if sUuid == Nothing && tdUuid /= Nothing && stUuid /= Nothing then "Soll der Arbeitsschritt gelöscht werden?"
+      else if sUuid == Nothing && tdUuid == Nothing && stUuid /= Nothing then "Soll die Serviceaufgabe gelöscht werden?"
+      else "Es gibt nichts zum Löschen!"
+  in
+    if event /= TO.NoOp then
+      Html.div [ Attr.class "formBG" ][
+        Html.div [ Attr.class "confirmDiv" ] [
+          Html.div[][ Html.text msg ]
+          , getActionButton "Ok" True event Nothing
+          , getActionButton "Abbrechen" True TO.HideConfirm Nothing
+        ]
+      ]
+    else Html.text ""
 
 getFormDiv: Html Msg -> Msg -> Html Msg
 getFormDiv subForm event =
   Html.div [ Attr.class "formBG" ][
     Html.div [ Attr.class "formDiv" ] [
       subForm
-      , Html.div[ Attr.class "formDivRow"][ getActionButton "schließen" True event Nothing ]
+      , Html.div[ Attr.class "formDivRow"][ getActionButton "Schließen" True event Nothing ]
     ]
   ]
 
@@ -55,13 +82,13 @@ getSpEditForm servicePlan =
           List.map (\td ->
             Html.div[][
               Html.div[][
-                getActionButton "-" True (TO.RemoveTodo sp.uuid td.uuid) Nothing
+                getActionButton "-" True (TO.ShowConfirm (Just sp.uuid, Just td.uuid, Nothing)) Nothing
                 , Html.input[Attr.style "width" "93%", Attr.id ("todo" ++ td.uuid), Attr.value td.name, Ev.onInput (TO.SetDotoName sp.uuid td.uuid)][]
                 , Html.div[](
                   List.map (\stuff ->
                     Html.div[][
                       Html.span[ Attr.style "margin" "15px" ][]
-                      , getActionButton "-" True (TO.RemoveStuff sp.uuid td.uuid stuff.uuid) Nothing
+                      , getActionButton "-" True (TO.ShowConfirm (Just sp.uuid, Just td.uuid, Just stuff.uuid)) Nothing
                       , Html.input[Attr.style "width" "89%", Attr.id ("stuff" ++ stuff.uuid), Attr.value stuff.name, Ev.onInput (TO.SetStuffName sp.uuid td.uuid stuff.uuid)][]
                     ]
                   ) td.stuff
@@ -107,16 +134,9 @@ showServiceList sp =
   Html.li [][
     if sp.years /= Nothing then Html.div[][ Html.text ("Jahre:" ++ DU.getStringOrEmptyFromNumber sp.years) ] else Html.text ""
     , if sp.distance /= Nothing then Html.div[][ Html.text ("Km:" ++ DU.getStringOrEmptyFromNumber sp.distance) ] else Html.text ""
-    , Html.div[][ getActionButton "Bearbeiten" True (TO.ToggleEditServicePlan (Just sp.uuid)) Nothing, getActionButton "Löschen" True (TO.DelServicePlan sp.uuid) Nothing ]
+    , Html.div[][ getActionButton "Bearbeiten" True (TO.ToggleEditServicePlan (Just sp.uuid)) Nothing, getActionButton "Löschen" True (TO.ShowConfirm (Just sp.uuid, Nothing, Nothing)) Nothing ]
     , Html.ul [] (List.map showServiceItem sp.todos)
   ]
-{-
-  Html.li [][
-    Html.div[][ Html.label[Attr.for ("year"++sp.uuid)][Html.text "Jahr:"], Html.input[Attr.id ("year"++sp.uuid), Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.years)][] ]
-    , Html.div[][ Html.label[Attr.for ("dist"++sp.uuid)][Html.text "Km:"], Html.input[Attr.id ("dist"++sp.uuid), Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.distance)][] ]
-    , Html.ul [] (List.map showServiceItem sp.todos)
-  ]
--}
 
 getPlanDiv: O.Model -> List (Html Msg)
 getPlanDiv model = [

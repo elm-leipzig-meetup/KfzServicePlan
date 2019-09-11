@@ -54,23 +54,42 @@
 }
 
 .formDiv {
-	background-color: #fff;
-    margin: 20px;
-    padding: 15px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    -webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
-    -moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
-    -ms-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
-    -o-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
-    box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
-    width: 750px;
-    height: 550px;
-    border: 2px solid #a6b3b3;
-	  overflow-y: auto;
+  background-color: #fff;
+  margin: 20px;
+  padding: 15px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -ms-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -o-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  width: 750px;
+  height: 550px;
+  border: 2px solid #a6b3b3;
+  overflow-y: auto;
+}
+
+.confirmDiv {
+  background-color: #fff;
+  margin: 150px;
+  padding: 15px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -ms-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  -o-box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.3);
+  width: 500px;
+  height: 50px;
+  border: 2px solid #a6b3b3;
 }
 
 .formDivRow {

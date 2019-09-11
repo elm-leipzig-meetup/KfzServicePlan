@@ -17,8 +17,10 @@ type Msg =
   | ToggleServicePlan
   | ToggleKonfig
   | ToggleEditServicePlan (Maybe String)
+  | ShowConfirm (Maybe String, Maybe String, Maybe String)
+  | HideConfirm
   | AddServicePlan
-  | DelServicePlan String
+  | RemoveServicePlan String
   | SetYearInServicePlan String String
   | SetDistanceInServicePlan String String
   | SetDotoName String String String

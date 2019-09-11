@@ -20,6 +20,7 @@ type alias Session = {
   , showServicePlan: Bool
   , showKonfig: Bool
   , showEditServicePlan: Bool
+  , uuidForConfirmDelete: List (Maybe String)
   , roundedDist: Int
   , random: Int
   , currentSeed: Maybe Random.Seed
@@ -65,6 +66,7 @@ getEmptySession = {
   , showServicePlan = False
   , showKonfig = False
   , showEditServicePlan = False
+  , uuidForConfirmDelete = []
   , roundedDist = 0
   , random=0
   , currentSeed=Nothing

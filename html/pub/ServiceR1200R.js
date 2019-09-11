@@ -1894,9 +1894,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.a4,
-		impl.bh,
-		impl.bf,
+		impl.a5,
+		impl.bi,
+		impl.bg,
 		function() { return function() {} }
 	);
 });
@@ -3966,11 +3966,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.a4,
-		impl.bh,
-		impl.bf,
+		impl.a5,
+		impl.bi,
+		impl.bg,
 		function(sendToApp, initialModel) {
-			var view = impl.bj;
+			var view = impl.bk;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -4002,12 +4002,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.a4,
-		impl.bh,
-		impl.bf,
+		impl.a5,
+		impl.bi,
+		impl.bg,
 		function(sendToApp, initialModel) {
 			var divertHrefToApp = impl.I && impl.I(sendToApp)
-			var view = impl.bj;
+			var view = impl.bk;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -4015,12 +4015,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aY);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aZ);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.bg) && (_VirtualDom_doc.title = title = doc.bg);
+				(title !== doc.bh) && (_VirtualDom_doc.title = title = doc.bh);
 			});
 		}
 	);
@@ -4076,8 +4076,8 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.a7;
-	var onUrlRequest = impl.a8;
+	var onUrlChange = impl.a8;
+	var onUrlRequest = impl.a9;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
@@ -4107,13 +4107,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		a4: function(flags)
+		a5: function(flags)
 		{
-			return A3(impl.a4, flags, _Browser_getUrl(), key);
+			return A3(impl.a5, flags, _Browser_getUrl(), key);
 		},
-		bj: impl.bj,
-		bh: impl.bh,
-		bf: impl.bf
+		bk: impl.bk,
+		bi: impl.bi,
+		bg: impl.bg
 	});
 }
 
@@ -4179,17 +4179,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { a1: 'hidden', aZ: 'visibilitychange' }
+		? { a2: 'hidden', a_: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { a1: 'mozHidden', aZ: 'mozvisibilitychange' }
+		? { a2: 'mozHidden', a_: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { a1: 'msHidden', aZ: 'msvisibilitychange' }
+		? { a2: 'msHidden', a_: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { a1: 'webkitHidden', aZ: 'webkitvisibilitychange' }
-		: { a1: 'hidden', aZ: 'visibilitychange' };
+		? { a2: 'webkitHidden', a_: 'webkitvisibilitychange' }
+		: { a2: 'hidden', a_: 'visibilitychange' };
 }
 
 
@@ -4271,7 +4271,7 @@ function _Browser_getViewport()
 {
 	return {
 		aM: _Browser_getScene(),
-		aU: {
+		aV: {
 			_: _Browser_window.pageXOffset,
 			aa: _Browser_window.pageYOffset,
 			F: _Browser_doc.documentElement.clientWidth,
@@ -4313,7 +4313,7 @@ function _Browser_getViewportOf(id)
 				F: node.scrollWidth,
 				z: node.scrollHeight
 			},
-			aU: {
+			aV: {
 				_: node.scrollLeft,
 				aa: node.scrollTop,
 				F: node.clientWidth,
@@ -4348,13 +4348,13 @@ function _Browser_getElement(id)
 		var y = _Browser_window.pageYOffset;
 		return {
 			aM: _Browser_getScene(),
-			aU: {
+			aV: {
 				_: x,
 				aa: y,
 				F: _Browser_doc.documentElement.clientWidth,
 				z: _Browser_doc.documentElement.clientHeight
 			},
-			a_: {
+			a$: {
 				_: x + rect.left,
 				aa: y + rect.top,
 				F: rect.width,
@@ -5086,7 +5086,7 @@ var TSFoster$elm_uuid$UUID$canonical = function (_n0) {
 	}
 };
 var TSFoster$elm_uuid$UUID$toString = TSFoster$elm_uuid$UUID$canonical;
-var author$project$Devs$Objects$getEmptyServicePlan = {x: elm$core$Maybe$Nothing, aT: _List_Nil, D: '', aW: elm$core$Maybe$Nothing};
+var author$project$Devs$Objects$getEmptyServicePlan = {x: elm$core$Maybe$Nothing, aT: _List_Nil, D: '', aX: elm$core$Maybe$Nothing};
 var author$project$Devs$Objects$getEmptyStuff = {V: '', D: ''};
 var author$project$Devs$Objects$getEmptyTodo = {V: '', aQ: _List_Nil, D: ''};
 var author$project$Devs$Objects$setConfig = F3(
@@ -5638,7 +5638,7 @@ var author$project$Devs$Ports$pushDataToStore = _Platform_outgoingPort(
 									'years',
 									function ($) {
 										return A3(elm$core$Maybe$destruct, elm$json$Json$Encode$null, elm$json$Json$Encode$int, $);
-									}($.aW))
+									}($.aX))
 								]));
 					})(b),
 					elm$json$Json$Encode$bool(c)
@@ -5670,7 +5670,7 @@ var author$project$Devs$Utils$getServicePlan = _List_fromArray(
 			}
 			]),
 		D: '4fccc52f-58d9-4f5c-960f-4ce6d76d8721',
-		aW: elm$core$Maybe$Just(1)
+		aX: elm$core$Maybe$Just(1)
 	},
 		{
 		x: elm$core$Maybe$Nothing,
@@ -5714,7 +5714,7 @@ var author$project$Devs$Utils$getServicePlan = _List_fromArray(
 			}
 			]),
 		D: '4b79b18b-1317-44b6-bfae-ff7b2e34ae71',
-		aW: elm$core$Maybe$Just(2)
+		aX: elm$core$Maybe$Just(2)
 	},
 		{
 		x: elm$core$Maybe$Nothing,
@@ -5740,7 +5740,7 @@ var author$project$Devs$Utils$getServicePlan = _List_fromArray(
 			}
 			]),
 		D: 'd4175f0b-e12d-4c4a-acf3-ff3053ffc84d',
-		aW: elm$core$Maybe$Just(6)
+		aX: elm$core$Maybe$Just(6)
 	},
 		{
 		x: elm$core$Maybe$Just(10000),
@@ -5750,7 +5750,7 @@ var author$project$Devs$Utils$getServicePlan = _List_fromArray(
 				{V: 'Kontrolle der Lampen und Blinker', aQ: _List_Nil, D: '186c88b8-ae39-48c0-93ff-9e894169eef4'}
 			]),
 		D: 'd09fa333-1801-4227-80eb-95d083630202',
-		aW: elm$core$Maybe$Nothing
+		aX: elm$core$Maybe$Nothing
 	},
 		{
 		x: elm$core$Maybe$Just(20000),
@@ -5774,7 +5774,7 @@ var author$project$Devs$Utils$getServicePlan = _List_fromArray(
 			}
 			]),
 		D: '919a075e-9b60-4228-b061-c8ba62964b01',
-		aW: elm$core$Maybe$Nothing
+		aX: elm$core$Maybe$Nothing
 	}
 	]);
 var elm$core$Maybe$withDefault = F2(
@@ -6128,13 +6128,13 @@ var elm$time$Time$toCivil = function (minutes) {
 	return {
 		as: (dayOfYear - ((((153 * mp) + 2) / 5) | 0)) + 1,
 		ay: month,
-		aV: year + ((month <= 2) ? 1 : 0)
+		aW: year + ((month <= 2) ? 1 : 0)
 	};
 };
 var elm$time$Time$toYear = F2(
 	function (zone, time) {
 		return elm$time$Time$toCivil(
-			A2(elm$time$Time$toAdjustedMinutes, zone, time)).aV;
+			A2(elm$time$Time$toAdjustedMinutes, zone, time)).aW;
 	});
 var elm$time$Time$Zone = F2(
 	function (a, b) {
@@ -6293,13 +6293,42 @@ var author$project$Devs$Update$update = F2(
 						{ak: newSession}),
 					elm$core$Platform$Cmd$none);
 			case 10:
+				var _n2 = msg.a;
+				var spUuidMaybe = _n2.a;
+				var tdUuidMaybe = _n2.b;
+				var sUuidMaybe = _n2.c;
 				var session = model.ak;
-				var _n2 = A2(
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							ak: _Utils_update(
+								session,
+								{
+									aU: _List_fromArray(
+										[spUuidMaybe, tdUuidMaybe, sUuidMaybe])
+								})
+						}),
+					elm$core$Platform$Cmd$none);
+			case 11:
+				var session = model.ak;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							ak: _Utils_update(
+								session,
+								{aU: _List_Nil})
+						}),
+					elm$core$Platform$Cmd$none);
+			case 12:
+				var session = model.ak;
+				var _n3 = A2(
 					elm$random$Random$step,
 					TSFoster$elm_uuid$UUID$generator,
 					author$project$Devs$Utils$getSeed(model));
-				var newUuid = _n2.a;
-				var newSeed = _n2.b;
+				var newUuid = _n3.a;
+				var newSeed = _n3.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -6322,8 +6351,9 @@ var author$project$Devs$Update$update = F2(
 								})
 						}),
 					elm$core$Platform$Cmd$none);
-			case 11:
+			case 13:
 				var uuid = msg.a;
+				var session = model.ak;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -6333,10 +6363,13 @@ var author$project$Devs$Update$update = F2(
 								function (i) {
 									return !_Utils_eq(i.D, uuid);
 								},
-								model.aN)
+								model.aN),
+							ak: _Utils_update(
+								session,
+								{aU: _List_Nil})
 						}),
 					elm$core$Platform$Cmd$none);
-			case 12:
+			case 14:
 				var spUuid = msg.a;
 				var val = msg.b;
 				var spForEdit = A2(
@@ -6358,7 +6391,7 @@ var author$project$Devs$Update$update = F2(
 						return _Utils_update(
 							spForEdit,
 							{
-								aW: elm$core$String$toInt(val)
+								aX: elm$core$String$toInt(val)
 							});
 					},
 					model.aN);
@@ -6367,7 +6400,7 @@ var author$project$Devs$Update$update = F2(
 						model,
 						{aN: newSpList}),
 					elm$core$Platform$Cmd$none);
-			case 13:
+			case 15:
 				var spUuid = msg.a;
 				var val = msg.b;
 				var spForEdit = A2(
@@ -6398,7 +6431,7 @@ var author$project$Devs$Update$update = F2(
 						model,
 						{aN: newSpList}),
 					elm$core$Platform$Cmd$none);
-			case 14:
+			case 16:
 				var spUuid = msg.a;
 				var tdUuid = msg.b;
 				var val = msg.c;
@@ -6439,7 +6472,7 @@ var author$project$Devs$Update$update = F2(
 						model,
 						{aN: newSpList}),
 					elm$core$Platform$Cmd$none);
-			case 15:
+			case 17:
 				var spUuid = msg.a;
 				var tdUuid = msg.b;
 				var sUuid = msg.c;
@@ -6502,15 +6535,15 @@ var author$project$Devs$Update$update = F2(
 						model,
 						{aN: newSpList}),
 					elm$core$Platform$Cmd$none);
-			case 16:
+			case 18:
 				var spUuid = msg.a;
 				var session = model.ak;
-				var _n3 = A2(
+				var _n4 = A2(
 					elm$random$Random$step,
 					TSFoster$elm_uuid$UUID$generator,
 					author$project$Devs$Utils$getSeed(model));
-				var newUuid = _n3.a;
-				var newSeed = _n3.b;
+				var newUuid = _n4.a;
+				var newSeed = _n4.b;
 				var newSpList = A3(
 					elm_community$list_extra$List$Extra$updateIf,
 					function (item) {
@@ -6546,7 +6579,7 @@ var author$project$Devs$Update$update = F2(
 								})
 						}),
 					elm$core$Platform$Cmd$none);
-			case 17:
+			case 19:
 				var spUuid = msg.a;
 				var tdUuid = msg.b;
 				var spForEdit = A2(
@@ -6560,12 +6593,12 @@ var author$project$Devs$Update$update = F2(
 							},
 							model.aN)));
 				var session = model.ak;
-				var _n4 = A2(
+				var _n5 = A2(
 					elm$random$Random$step,
 					TSFoster$elm_uuid$UUID$generator,
 					author$project$Devs$Utils$getSeed(model));
-				var newUuid = _n4.a;
-				var newSeed = _n4.b;
+				var newUuid = _n5.a;
+				var newSeed = _n5.b;
 				var newTodos = A3(
 					elm_community$list_extra$List$Extra$updateIf,
 					function (item) {
@@ -6612,7 +6645,7 @@ var author$project$Devs$Update$update = F2(
 								})
 						}),
 					elm$core$Platform$Cmd$none);
-			case 18:
+			case 20:
 				var spUuid = msg.a;
 				var tdUuid = msg.b;
 				var spForEdit = A2(
@@ -6625,6 +6658,7 @@ var author$project$Devs$Update$update = F2(
 								return _Utils_eq(i.D, spUuid);
 							},
 							model.aN)));
+				var session = model.ak;
 				var newSpList = A3(
 					elm_community$list_extra$List$Extra$updateIf,
 					function (item) {
@@ -6646,7 +6680,12 @@ var author$project$Devs$Update$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aN: newSpList}),
+						{
+							aN: newSpList,
+							ak: _Utils_update(
+								session,
+								{aU: _List_Nil})
+						}),
 					elm$core$Platform$Cmd$none);
 			default:
 				var spUuid = msg.a;
@@ -6662,6 +6701,7 @@ var author$project$Devs$Update$update = F2(
 								return _Utils_eq(i.D, spUuid);
 							},
 							model.aN)));
+				var session = model.ak;
 				var newTodos = A3(
 					elm_community$list_extra$List$Extra$updateIf,
 					function (item) {
@@ -6694,11 +6734,16 @@ var author$project$Devs$Update$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aN: newSpList}),
+						{
+							aN: newSpList,
+							ak: _Utils_update(
+								session,
+								{aU: _List_Nil})
+						}),
 					elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Devs$Objects$getEmptySession = {R: elm$core$Maybe$Nothing, S: 0, W: 0, X: 0, al: false, Y: false, Z: false, aO: elm$core$Maybe$Nothing};
+var author$project$Devs$Objects$getEmptySession = {R: elm$core$Maybe$Nothing, S: 0, W: 0, X: 0, al: false, Y: false, Z: false, aO: elm$core$Maybe$Nothing, aU: _List_Nil};
 var author$project$Devs$Objects$getInitialConfig = {P: 2012, x: 58617};
 var author$project$Devs$Objects$initialModel = {ab: author$project$Devs$Objects$getInitialConfig, aN: _List_Nil, ak: author$project$Devs$Objects$getEmptySession};
 var author$project$Devs$TypeObject$SetYear = function (a) {
@@ -6839,7 +6884,7 @@ var author$project$Devs$Ports$setDataFromStore = _Platform_incomingPort(
 															elm$json$Json$Decode$andThen,
 															function (distance) {
 																return elm$json$Json$Decode$succeed(
-																	{x: distance, aT: todos, D: uuid, aW: years});
+																	{x: distance, aT: todos, D: uuid, aX: years});
 															},
 															A2(
 																elm$json$Json$Decode$field,
@@ -6928,14 +6973,19 @@ var author$project$ServiceR1200R$subscriptions = function (model) {
 				author$project$Devs$Ports$setDataFromStore(author$project$Devs$TypeObject$ReadDataFromPublish)
 			]));
 };
-var author$project$Devs$TypeObject$AddServicePlan = {$: 10};
-var author$project$Devs$TypeObject$SetBuyingYear = function (a) {
-	return {$: 6, a: a};
+var author$project$Devs$TypeObject$HideConfirm = {$: 11};
+var author$project$Devs$TypeObject$NoOp = {$: 0};
+var author$project$Devs$TypeObject$RemoveServicePlan = function (a) {
+	return {$: 13, a: a};
 };
-var author$project$Devs$TypeObject$SetDistance = function (a) {
-	return {$: 5, a: a};
-};
-var author$project$Devs$TypeObject$ToggleKonfig = {$: 8};
+var author$project$Devs$TypeObject$RemoveStuff = F3(
+	function (a, b, c) {
+		return {$: 21, a: a, b: b, c: c};
+	});
+var author$project$Devs$TypeObject$RemoveTodo = F2(
+	function (a, b) {
+		return {$: 20, a: a, b: b};
+	});
 var elm$json$Json$Decode$map2 = _Json_map2;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -6995,8 +7045,73 @@ var author$project$Templates$Utils$getActionButton = F4(
 				]),
 			_List_Nil) : elm$html$Html$text('');
 	});
-var author$project$Devs$TypeObject$DelServicePlan = function (a) {
-	return {$: 11, a: a};
+var elm$html$Html$div = _VirtualDom_node('div');
+var elm_community$list_extra$List$Extra$getAt = F2(
+	function (idx, xs) {
+		return (idx < 0) ? elm$core$Maybe$Nothing : elm$core$List$head(
+			A2(elm$core$List$drop, idx, xs));
+	});
+var author$project$Templates$Utils$getConfirmDiv = function (model) {
+	var tdUuid = A2(
+		elm$core$Maybe$withDefault,
+		elm$core$Maybe$Nothing,
+		A2(elm_community$list_extra$List$Extra$getAt, 1, model.ak.aU));
+	var stUuid = A2(
+		elm$core$Maybe$withDefault,
+		elm$core$Maybe$Nothing,
+		A2(elm_community$list_extra$List$Extra$getAt, 0, model.ak.aU));
+	var sUuid = A2(
+		elm$core$Maybe$withDefault,
+		elm$core$Maybe$Nothing,
+		A2(elm_community$list_extra$List$Extra$getAt, 2, model.ak.aU));
+	var msg = ((!_Utils_eq(sUuid, elm$core$Maybe$Nothing)) && ((!_Utils_eq(tdUuid, elm$core$Maybe$Nothing)) && (!_Utils_eq(stUuid, elm$core$Maybe$Nothing)))) ? 'Soll der Materialeintrag gelöscht werden?' : ((_Utils_eq(sUuid, elm$core$Maybe$Nothing) && ((!_Utils_eq(tdUuid, elm$core$Maybe$Nothing)) && (!_Utils_eq(stUuid, elm$core$Maybe$Nothing)))) ? 'Soll der Arbeitsschritt gelöscht werden?' : ((_Utils_eq(sUuid, elm$core$Maybe$Nothing) && (_Utils_eq(tdUuid, elm$core$Maybe$Nothing) && (!_Utils_eq(stUuid, elm$core$Maybe$Nothing)))) ? 'Soll die Serviceaufgabe gelöscht werden?' : 'Es gibt nichts zum Löschen!'));
+	var event = ((!_Utils_eq(sUuid, elm$core$Maybe$Nothing)) && ((!_Utils_eq(tdUuid, elm$core$Maybe$Nothing)) && (!_Utils_eq(stUuid, elm$core$Maybe$Nothing)))) ? A3(
+		author$project$Devs$TypeObject$RemoveStuff,
+		A2(elm$core$Maybe$withDefault, '', stUuid),
+		A2(elm$core$Maybe$withDefault, '', tdUuid),
+		A2(elm$core$Maybe$withDefault, '', sUuid)) : ((_Utils_eq(sUuid, elm$core$Maybe$Nothing) && ((!_Utils_eq(tdUuid, elm$core$Maybe$Nothing)) && (!_Utils_eq(stUuid, elm$core$Maybe$Nothing)))) ? A2(
+		author$project$Devs$TypeObject$RemoveTodo,
+		A2(elm$core$Maybe$withDefault, '', stUuid),
+		A2(elm$core$Maybe$withDefault, '', tdUuid)) : ((_Utils_eq(sUuid, elm$core$Maybe$Nothing) && (_Utils_eq(tdUuid, elm$core$Maybe$Nothing) && (!_Utils_eq(stUuid, elm$core$Maybe$Nothing)))) ? author$project$Devs$TypeObject$RemoveServicePlan(
+		A2(elm$core$Maybe$withDefault, '', stUuid)) : author$project$Devs$TypeObject$NoOp));
+	return (!_Utils_eq(event, author$project$Devs$TypeObject$NoOp)) ? A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('formBG')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('confirmDiv')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(msg)
+							])),
+						A4(author$project$Templates$Utils$getActionButton, 'Ok', true, event, elm$core$Maybe$Nothing),
+						A4(author$project$Templates$Utils$getActionButton, 'Abbrechen', true, author$project$Devs$TypeObject$HideConfirm, elm$core$Maybe$Nothing)
+					]))
+			])) : elm$html$Html$text('');
+};
+var author$project$Devs$TypeObject$AddServicePlan = {$: 12};
+var author$project$Devs$TypeObject$SetBuyingYear = function (a) {
+	return {$: 6, a: a};
+};
+var author$project$Devs$TypeObject$SetDistance = function (a) {
+	return {$: 5, a: a};
+};
+var author$project$Devs$TypeObject$ToggleKonfig = {$: 8};
+var author$project$Devs$TypeObject$ShowConfirm = function (a) {
+	return {$: 10, a: a};
 };
 var author$project$Devs$TypeObject$ToggleEditServicePlan = function (a) {
 	return {$: 9, a: a};
@@ -7035,20 +7150,19 @@ var author$project$Templates$Utils$showServiceItem = function (todo) {
 					todo.aQ))
 			]));
 };
-var elm$html$Html$div = _VirtualDom_node('div');
 var author$project$Templates$Utils$showServiceList = function (sp) {
 	return A2(
 		elm$html$Html$li,
 		_List_Nil,
 		_List_fromArray(
 			[
-				(!_Utils_eq(sp.aW, elm$core$Maybe$Nothing)) ? A2(
+				(!_Utils_eq(sp.aX, elm$core$Maybe$Nothing)) ? A2(
 				elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
 						elm$html$Html$text(
-						'Jahre:' + author$project$Devs$Utils$getStringOrEmptyFromNumber(sp.aW))
+						'Jahre:' + author$project$Devs$Utils$getStringOrEmptyFromNumber(sp.aX))
 					])) : elm$html$Html$text(''),
 				(!_Utils_eq(sp.x, elm$core$Maybe$Nothing)) ? A2(
 				elm$html$Html$div,
@@ -7074,7 +7188,11 @@ var author$project$Templates$Utils$showServiceList = function (sp) {
 						author$project$Templates$Utils$getActionButton,
 						'Löschen',
 						true,
-						author$project$Devs$TypeObject$DelServicePlan(sp.D),
+						author$project$Devs$TypeObject$ShowConfirm(
+							_Utils_Tuple3(
+								elm$core$Maybe$Just(sp.D),
+								elm$core$Maybe$Nothing,
+								elm$core$Maybe$Nothing)),
 						elm$core$Maybe$Nothing)
 					])),
 				A2(
@@ -7220,8 +7338,8 @@ var author$project$Templates$Utils$getKonfigForm = function (model) {
 var author$project$Devs$TypeObject$ToggleServicePlan = {$: 7};
 var author$project$Devs$Utils$getTodosFromServicePlan = function (sp) {
 	var info = (!_Utils_eq(sp.x, elm$core$Maybe$Nothing)) ? (' (' + (elm$core$String$fromInt(
-		A2(elm$core$Maybe$withDefault, 0, sp.x)) + ' km)')) : ((!_Utils_eq(sp.aW, elm$core$Maybe$Nothing)) ? (' (' + (elm$core$String$fromInt(
-		A2(elm$core$Maybe$withDefault, 0, sp.aW)) + ' Jahr(e))')) : '');
+		A2(elm$core$Maybe$withDefault, 0, sp.x)) + ' km)')) : ((!_Utils_eq(sp.aX, elm$core$Maybe$Nothing)) ? (' (' + (elm$core$String$fromInt(
+		A2(elm$core$Maybe$withDefault, 0, sp.aX)) + ' Jahr(e))')) : '');
 	return A2(
 		elm$core$List$map,
 		function (item) {
@@ -7235,9 +7353,9 @@ var author$project$Devs$Utils$getTodosFromServicePlan = function (sp) {
 };
 var author$project$Devs$Utils$isTodoForPlan = F3(
 	function (year, dist, sp) {
-		var yearFits = (!_Utils_eq(sp.aW, elm$core$Maybe$Nothing)) ? (!A2(
+		var yearFits = (!_Utils_eq(sp.aX, elm$core$Maybe$Nothing)) ? (!A2(
 			elm$core$Basics$modBy,
-			A2(elm$core$Maybe$withDefault, 0, sp.aW),
+			A2(elm$core$Maybe$withDefault, 0, sp.aX),
 			year)) : false;
 		var distFits = (!_Utils_eq(sp.x, elm$core$Maybe$Nothing)) ? (!A2(
 			elm$core$Basics$modBy,
@@ -7368,34 +7486,26 @@ var author$project$Templates$Utils$getPlanDiv = function (model) {
 };
 var author$project$Devs$TypeObject$AddStuff = F2(
 	function (a, b) {
-		return {$: 17, a: a, b: b};
+		return {$: 19, a: a, b: b};
 	});
 var author$project$Devs$TypeObject$AddTodo = function (a) {
-	return {$: 16, a: a};
+	return {$: 18, a: a};
 };
-var author$project$Devs$TypeObject$RemoveStuff = F3(
-	function (a, b, c) {
-		return {$: 19, a: a, b: b, c: c};
-	});
-var author$project$Devs$TypeObject$RemoveTodo = F2(
-	function (a, b) {
-		return {$: 18, a: a, b: b};
-	});
 var author$project$Devs$TypeObject$SetDistanceInServicePlan = F2(
 	function (a, b) {
-		return {$: 13, a: a, b: b};
+		return {$: 15, a: a, b: b};
 	});
 var author$project$Devs$TypeObject$SetDotoName = F3(
 	function (a, b, c) {
-		return {$: 14, a: a, b: b, c: c};
+		return {$: 16, a: a, b: b, c: c};
 	});
 var author$project$Devs$TypeObject$SetStuffName = F4(
 	function (a, b, c, d) {
-		return {$: 15, a: a, b: b, c: c, d: d};
+		return {$: 17, a: a, b: b, c: c, d: d};
 	});
 var author$project$Devs$TypeObject$SetYearInServicePlan = F2(
 	function (a, b) {
-		return {$: 12, a: a, b: b};
+		return {$: 14, a: a, b: b};
 	});
 var author$project$Templates$Utils$getFormDiv = F2(
 	function (subForm, event) {
@@ -7424,7 +7534,7 @@ var author$project$Templates$Utils$getFormDiv = F2(
 								]),
 							_List_fromArray(
 								[
-									A4(author$project$Templates$Utils$getActionButton, 'schließen', true, event, elm$core$Maybe$Nothing)
+									A4(author$project$Templates$Utils$getActionButton, 'Schließen', true, event, elm$core$Maybe$Nothing)
 								]))
 						]))
 				]));
@@ -7461,7 +7571,7 @@ var author$project$Templates$Utils$getSpEditForm = function (servicePlan) {
 								elm$html$Html$Attributes$id('years'),
 								elm$html$Html$Attributes$type_('number'),
 								elm$html$Html$Attributes$value(
-								author$project$Devs$Utils$getStringOrEmptyFromNumber(sp.aW)),
+								author$project$Devs$Utils$getStringOrEmptyFromNumber(sp.aX)),
 								elm$html$Html$Events$onInput(
 								author$project$Devs$TypeObject$SetYearInServicePlan(sp.D))
 							]),
@@ -7515,7 +7625,11 @@ var author$project$Templates$Utils$getSpEditForm = function (servicePlan) {
 											author$project$Templates$Utils$getActionButton,
 											'-',
 											true,
-											A2(author$project$Devs$TypeObject$RemoveTodo, sp.D, td.D),
+											author$project$Devs$TypeObject$ShowConfirm(
+												_Utils_Tuple3(
+													elm$core$Maybe$Just(sp.D),
+													elm$core$Maybe$Just(td.D),
+													elm$core$Maybe$Nothing)),
 											elm$core$Maybe$Nothing),
 											A2(
 											elm$html$Html$input,
@@ -7550,7 +7664,11 @@ var author$project$Templates$Utils$getSpEditForm = function (servicePlan) {
 																author$project$Templates$Utils$getActionButton,
 																'-',
 																true,
-																A3(author$project$Devs$TypeObject$RemoveStuff, sp.D, td.D, stuff.D),
+																author$project$Devs$TypeObject$ShowConfirm(
+																	_Utils_Tuple3(
+																		elm$core$Maybe$Just(sp.D),
+																		elm$core$Maybe$Just(td.D),
+																		elm$core$Maybe$Just(stuff.D))),
 																elm$core$Maybe$Nothing),
 																A2(
 																elm$html$Html$input,
@@ -7626,6 +7744,7 @@ var author$project$Templates$Utils$getServiceApp = function (model) {
 		}
 	}();
 	var content = model.ak.Y ? author$project$Templates$Utils$getKonfigForm(model) : author$project$Templates$Utils$getPlanDiv(model);
+	var confirmForm = author$project$Templates$Utils$getConfirmDiv(model);
 	return A2(
 		elm$html$Html$div,
 		_List_fromArray(
@@ -7636,7 +7755,7 @@ var author$project$Templates$Utils$getServiceApp = function (model) {
 			elm$core$List$append,
 			content,
 			_List_fromArray(
-				[spEditForm])));
+				[spEditForm, confirmForm])));
 };
 var author$project$ServiceR1200R$view = function (model) {
 	return author$project$Templates$Utils$getServiceApp(model);
@@ -7777,12 +7896,12 @@ var elm$url$Url$fromString = function (str) {
 var elm$browser$Browser$element = _Browser_element;
 var author$project$ServiceR1200R$main = elm$browser$Browser$element(
 	{
-		a4: function (_n0) {
+		a5: function (_n0) {
 			return author$project$ServiceR1200R$init;
 		},
-		bf: author$project$ServiceR1200R$subscriptions,
-		bh: author$project$Devs$Update$update,
-		bj: author$project$ServiceR1200R$view
+		bg: author$project$ServiceR1200R$subscriptions,
+		bi: author$project$Devs$Update$update,
+		bk: author$project$ServiceR1200R$view
 	});
 _Platform_export({'ServiceR1200R':{'init':author$project$ServiceR1200R$main(
 	elm$json$Json$Decode$succeed(0))(0)}});}(this));
