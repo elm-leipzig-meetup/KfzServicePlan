@@ -6,15 +6,16 @@ import Html.Events as Ev exposing ( onClick, onInput )
 
 import Devs.Objects as O exposing ( Model, ServicePlan )
 import Devs.TypeObject as TO exposing ( .. )
-import Devs.Utils as DU exposing ( getActServicePlan )
+import Devs.Utils as DU exposing ( getActServicePlan, getStringOrEmptyFromNumber )
 
-getActionButton: String -> Bool -> Msg -> Html Msg
-getActionButton label showBtn event =
+getActionButton: String -> Bool -> Msg -> Maybe String -> Html Msg
+getActionButton label showBtn event titel =
   if showBtn then
     Html.input [
       Attr.type_ "button"
       , Attr.class "no-print"
       , Attr.value label
+      , Attr.title (Maybe.withDefault "" titel)
       , Ev.onClick event
     ][]
   else Html.text ""
@@ -28,13 +29,56 @@ getServiceApp model =
     content = if model.session.showKonfig
       then getKonfigForm model
       else getPlanDiv model
+    spEditForm = case model.session.showEditServicePlan of
+      True -> getSpEditForm (List.filter (\i -> i.uuid == Maybe.withDefault "" model.session.spForEdit) model.servicePlan |> List.head)
+      False -> Html.text ""
   in
-    Html.div [ Attr.class "appDiv" ] content
+    Html.div [ Attr.class "appDiv" ] (List.append content [spEditForm])
+
+getFormDiv: Html Msg -> Msg -> Html Msg
+getFormDiv subForm event =
+  Html.div [ Attr.class "formBG" ][
+    Html.div [ Attr.class "formDiv" ] [
+      subForm
+      , Html.div[ Attr.class "formDivRow"][ getActionButton "schließen" True event Nothing ]
+    ]
+  ]
+
+getSpEditForm: Maybe O.ServicePlan -> Html Msg
+getSpEditForm servicePlan =
+  let
+    sp = Maybe.withDefault O.getEmptyServicePlan servicePlan
+    editForm = Html.div[][
+        Html.div[][ Html.label[ Attr.for "years" ][ Html.text "Jahr(e):" ], Html.input[Attr.id "years", Attr.type_ "number", Attr.value (getStringOrEmptyFromNumber sp.years), Ev.onInput (TO.SetYearInServicePlan sp.uuid)][] ]
+        , Html.div[][ Html.label[ Attr.for "dist" ][ Html.text "Kilometer:" ], Html.input[Attr.id "dist", Attr.type_ "number", Attr.value (getStringOrEmptyFromNumber sp.distance), Ev.onInput (TO.SetDistanceInServicePlan sp.uuid)][] ]
+        , Html.div[](
+          List.map (\td ->
+            Html.div[][
+              Html.div[][
+                getActionButton "-" True (TO.RemoveTodo sp.uuid td.uuid) Nothing
+                , Html.input[Attr.style "width" "93%", Attr.id ("todo" ++ td.uuid), Attr.value td.name, Ev.onInput (TO.SetDotoName sp.uuid td.uuid)][]
+                , Html.div[](
+                  List.map (\stuff ->
+                    Html.div[][
+                      Html.span[ Attr.style "margin" "15px" ][]
+                      , getActionButton "-" True (TO.RemoveStuff sp.uuid td.uuid stuff.uuid) Nothing
+                      , Html.input[Attr.style "width" "89%", Attr.id ("stuff" ++ stuff.uuid), Attr.value stuff.name, Ev.onInput (TO.SetStuffName sp.uuid td.uuid stuff.uuid)][]
+                    ]
+                  ) td.stuff
+                )
+              ], Html.div[][ Html.span[ Attr.style "margin" "15px" ][], getActionButton "+" True (TO.AddStuff sp.uuid td.uuid) (Just "Neues Material hinzufügen") ]
+            ]
+          ) sp.todos
+        )
+        , Html.div[][ getActionButton "+" True (TO.AddTodo sp.uuid) (Just "Neue Aufgabe hinzufügen") ]
+      ]
+  in
+    getFormDiv editForm (TO.ToggleEditServicePlan Nothing)
 
 getKonfigForm: O.Model -> List (Html Msg)
 getKonfigForm model = [
     Html.div [ Attr.class "no-print" ][
-      getActionButton "Schließen" True TO.ToggleKonfig
+      getActionButton "Speichern" True TO.ToggleKonfig Nothing
     ], Html.div [ Attr.class "no-print" ][
       Html.label [ Attr.for "year" ][ Html.text "Kaufjahr:" ]
       , Html.input [
@@ -43,7 +87,7 @@ getKonfigForm model = [
         , Attr.value (String.fromInt (model.config.buyingYear))
         , Ev.onInput TO.SetBuyingYear
       ][ ]
-    ], Html.div [ Attr.class "no-print" ][
+    ] , Html.div [ Attr.class "no-print" ][
       Html.label [ Attr.for "dist" ][ Html.text "Laufleistung (km):" ]
       , Html.input [
         Attr.id "dist"
@@ -51,9 +95,28 @@ getKonfigForm model = [
         , Attr.value (String.fromInt model.config.distance)
         , Ev.onInput TO.SetDistance
       ][ ]
-    ], Html.div [ Attr.class "no-print" ][
+    ]
+    , Html.div [][ getActionButton "+" True TO.AddServicePlan (Just "Neuen Serviceschritt hinzufügen") ]
+    , Html.div [ Attr.class "no-print, configListDiv" ][
+      Html.ul [] (List.map showServiceList model.servicePlan)
     ]
   ]
+
+showServiceList: O.ServicePlan -> Html Msg
+showServiceList sp =
+  Html.li [][
+    if sp.years /= Nothing then Html.div[][ Html.text ("Jahre:" ++ DU.getStringOrEmptyFromNumber sp.years) ] else Html.text ""
+    , if sp.distance /= Nothing then Html.div[][ Html.text ("Km:" ++ DU.getStringOrEmptyFromNumber sp.distance) ] else Html.text ""
+    , Html.div[][ getActionButton "Bearbeiten" True (TO.ToggleEditServicePlan (Just sp.uuid)) Nothing, getActionButton "Löschen" True (TO.DelServicePlan sp.uuid) Nothing ]
+    , Html.ul [] (List.map showServiceItem sp.todos)
+  ]
+{-
+  Html.li [][
+    Html.div[][ Html.label[Attr.for ("year"++sp.uuid)][Html.text "Jahr:"], Html.input[Attr.id ("year"++sp.uuid), Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.years)][] ]
+    , Html.div[][ Html.label[Attr.for ("dist"++sp.uuid)][Html.text "Km:"], Html.input[Attr.id ("dist"++sp.uuid), Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.distance)][] ]
+    , Html.ul [] (List.map showServiceItem sp.todos)
+  ]
+-}
 
 getPlanDiv: O.Model -> List (Html Msg)
 getPlanDiv model = [
@@ -75,8 +138,8 @@ getPlanDiv model = [
         , Ev.onInput TO.SetDistance
       ][ ]
     ], Html.div [][
-      getActionButton "Konfiguration" True TO.ToggleKonfig
-      , getActionButton "Wartungsplan" (not model.session.showServicePlan) TO.ToggleServicePlan
+      getActionButton "Konfiguration" True TO.ToggleKonfig Nothing
+      , getActionButton "Wartungsplan" (not model.session.showServicePlan) TO.ToggleServicePlan Nothing
     ], getServicePlan model
   ]
 
@@ -96,5 +159,5 @@ showServiceItem: O.Todo -> Html Msg
 showServiceItem todo =
   Html.li [][
     Html.text todo.name
-    , Html.ul [ ] ( List.map (\item -> Html.li [][ Html.text item ]) todo.stuff )
+    , Html.ul [ ] ( List.map (\item -> Html.li [][ Html.text item.name ]) todo.stuff )
   ]

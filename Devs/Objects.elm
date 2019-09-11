@@ -19,20 +19,29 @@ type alias Session = {
   currentYear: Int
   , showServicePlan: Bool
   , showKonfig: Bool
+  , showEditServicePlan: Bool
   , roundedDist: Int
   , random: Int
   , currentSeed: Maybe Random.Seed
+  , spForEdit: Maybe String
   }
 
 type alias ServicePlan = {
   years: Maybe Int
   , distance: Maybe Int
+  , uuid: String
   , todos: List Todo
   }
 
 type alias Todo = {
   name: String
-  , stuff: List String
+  , uuid: String
+  , stuff: List Stuff
+  }
+
+type alias Stuff = {
+  name: String
+  , uuid: String
   }
 
 --Model
@@ -55,9 +64,32 @@ getEmptySession = {
   currentYear = 0
   , showServicePlan = False
   , showKonfig = False
+  , showEditServicePlan = False
   , roundedDist = 0
   , random=0
   , currentSeed=Nothing
+  , spForEdit=Nothing
+  }
+
+getEmptyServicePlan: ServicePlan
+getEmptyServicePlan = {
+  years=Nothing
+  , distance=Nothing
+  , uuid=""
+  , todos=[]
+  }
+
+getEmptyTodo: Todo
+getEmptyTodo = {
+  name=""
+  , uuid=""
+  , stuff=[]
+  }
+
+getEmptyStuff: Stuff
+getEmptyStuff= {
+  name=""
+  , uuid=""
   }
 
 setConfig: Model -> Maybe Int -> Maybe Int -> Config
@@ -73,8 +105,8 @@ setConfig model newBuyingYear newDistance =
   in
     { currentConfig | buyingYear = by, distance = dist }
 
-setSession: Model -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Random.Seed -> Maybe Int -> Session
-setSession model newYear newShowKonfig newShowServicePlan newRoundedDist newSeed newRandom =
+setSession: Model -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Random.Seed -> Maybe Int -> Session
+setSession model newYear newShowKonfig newShowServicePlan newShowEditServicePlan newRoundedDist newSeed newRandom =
   let
     currentSession = model.session
     cy = case newYear of
@@ -86,6 +118,9 @@ setSession model newYear newShowKonfig newShowServicePlan newRoundedDist newSeed
     sk = case newShowKonfig of
       Just k -> k
       Nothing -> currentSession.showKonfig
+    sesp = case newShowEditServicePlan of
+      Just esp -> esp
+      Nothing -> currentSession.showEditServicePlan
     rd = case newRoundedDist of
       Just d -> d
       Nothing -> currentSession.roundedDist
