@@ -1,4 +1,4 @@
-port module ServiceR1200R exposing (..)
+module ServiceR1200R exposing (..)
 
 import Devs.Ports as P
 
@@ -7,14 +7,12 @@ import Html exposing (..)
 import Time as T
 import Task
 
-import Json.Decode as Json
+import Devs.Objects as O
+import Devs.Update as U
+import Devs.TypeObject as TO
+import Templates.Utils as TU
 
-import Devs.Objects as O exposing (Model, initialModel)
-import Devs.Update as U exposing ( update )
-import Devs.TypeObject as TO exposing ( .. )
-import Templates.Utils as TU exposing ( getServiceApp )
-
-import Debug exposing (log)
+--import Debug exposing (log)
 
 -- Methods
 
@@ -32,13 +30,13 @@ main =
         }
 
 subscriptions : O.Model -> Sub TO.Msg
-subscriptions model = Sub.batch [
+subscriptions _ = Sub.batch [
     P.setDataFromStore TO.ReadDataFromPublish
   ]
 
-init : ( O.Model, Cmd Msg )
+init : ( O.Model, Cmd TO.Msg )
 init =  ( O.initialModel, Cmd.batch [
-      P.pushDataToStore (initialModel.config, initialModel.servicePlan, True),
+      P.pushDataToStore (O.initialModel.config, O.initialModel.servicePlan, True),
       Task.perform TO.SetYear T.now
     ]
   )

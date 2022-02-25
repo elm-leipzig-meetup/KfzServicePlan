@@ -1,13 +1,11 @@
 module Devs.Utils exposing ( getSeed, getServicePlan, getActServicePlan, roundedDistance, getStringOrEmptyFromNumber)
 
-import List.Extra as ListE exposing ( .. )
 import Round as R
 import Random
 
-import Debug exposing (log)
+--import Debug exposing (log)
 
-import Devs.Objects as O exposing ( Model, ServicePlan, Todo )
-import Devs.TypeObject as TO exposing ( Msg )
+import Devs.Objects as O
 
 getSeed: O.Model -> Random.Seed
 getSeed model =
@@ -27,7 +25,7 @@ getActServicePlan year dist plan =
   in
     List.map getTodosFromServicePlan filteredServicePlan |> List.concat
 
-isTodoForPlan: Int -> Int -> ServicePlan -> Bool
+isTodoForPlan: Int -> Int -> O.ServicePlan -> Bool
 isTodoForPlan year dist sp =
   let
     yearFits = if sp.years /= Nothing then (modBy (Maybe.withDefault 0 sp.years) year == 0) else False
@@ -42,7 +40,7 @@ roundedDistance dist =
   in
     (Maybe.withDefault 0 (String.toInt (R.round -length (toFloat dist))))
 
-getTodosFromServicePlan: ServicePlan -> List Todo
+getTodosFromServicePlan: O.ServicePlan -> List O.Todo
 getTodosFromServicePlan sp =
   let
     info = if sp.distance /= Nothing then " (" ++ (String.fromInt (Maybe.withDefault 0 sp.distance)) ++ " km)"
@@ -51,7 +49,7 @@ getTodosFromServicePlan sp =
   in
     List.map (\item -> { item | name = item.name ++ info }) sp.todos
 
-getServicePlan: List ServicePlan
+getServicePlan: List O.ServicePlan
 getServicePlan = [
     { years=Just 1
       , distance=Nothing

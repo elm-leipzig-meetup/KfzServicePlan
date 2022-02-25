@@ -1,6 +1,5 @@
 module Devs.Objects exposing (..)
 
-import UUID exposing (UUID)
 import Random
 
 -- Model
@@ -120,7 +119,7 @@ setSession model newYear newShowKonfig newShowServicePlan newShowEditServicePlan
     sk = case newShowKonfig of
       Just k -> k
       Nothing -> currentSession.showKonfig
-    sesp = case newShowEditServicePlan of
+    _ = case newShowEditServicePlan of
       Just esp -> esp
       Nothing -> currentSession.showEditServicePlan
     rd = case newRoundedDist of

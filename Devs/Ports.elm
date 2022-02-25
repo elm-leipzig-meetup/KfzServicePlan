@@ -1,6 +1,6 @@
 port module Devs.Ports exposing (..)
 
-import Devs.Objects as O exposing ( Config, ServicePlan )
+import Devs.Objects exposing ( Config, ServicePlan )
 
 port pushDataToStore: (Config, List ServicePlan, Bool) -> Cmd msg
 

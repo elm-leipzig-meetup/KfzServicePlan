@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+      body {
+          font-family: monospace;
+          font-size: 15pt;
+      }
+      svg {
+          width: 250px;
+          height: 250px;
+      }
+      input, select, textarea {
+          margin: 1px;
+          padding: 5px;
+          border:1px solid #cccccc;
+      }
+      input[type="button"] {
+          height: 30px;
+          border-radius: 5px;
+          border: 1px solid silver;
+          padding: 0px 12px;
+          background-image: linear-gradient(darkgray, #EEEEEE);
+          display: inline-block;
+          cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='hpDiv'></div>
+    <script src="pub/QRCode.js"></script>
+    <script>
+        var app = Elm.MyQRCode.init({node : document.getElementById('hpDiv')});
+    </script>
+  </body>
+</html>

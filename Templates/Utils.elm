@@ -1,15 +1,15 @@
 module Templates.Utils exposing ( getServiceApp )
 
-import Html exposing (..)
-import Html.Attributes as Attr exposing (..)
-import Html.Events as Ev exposing ( onClick, onInput )
-import List.Extra as ListE
+import Html
+import Html.Attributes as Attr
+import Html.Events as Ev
+import List.Extra as List
 
-import Devs.Objects as O exposing ( Model, ServicePlan )
-import Devs.TypeObject as TO exposing ( .. )
-import Devs.Utils as DU exposing ( getActServicePlan, getStringOrEmptyFromNumber )
+import Devs.Objects as O
+import Devs.TypeObject as TO
+import Devs.Utils as DU
 
-getActionButton: String -> Bool -> Msg -> Maybe String -> Html Msg
+getActionButton: String -> Bool -> TO.Msg -> Maybe String -> Html.Html TO.Msg
 getActionButton label showBtn event titel =
   if showBtn then
     Html.input [
@@ -21,28 +21,28 @@ getActionButton label showBtn event titel =
     ][]
   else Html.text ""
 
-getOption: String -> String -> String -> Html Msg
-getOption key sel label = Html.option [ Attr.value key, Attr.selected (key==sel) ][ Html.text label ]
+--getOption: String -> String -> String -> Html Msg
+--getOption key sel label = Html.option [ Attr.value key, Attr.selected (key==sel) ][ Html.text label ]
 
-getServiceApp: O.Model -> Html Msg
+getServiceApp: O.Model -> Html.Html TO.Msg
 getServiceApp model =
   let
     content = if model.session.showKonfig
       then getKonfigForm model
       else getPlanDiv model
     confirmForm = getConfirmDiv model
-    spEditForm = case model.session.showEditServicePlan of
-      True -> getSpEditForm (List.filter (\i -> i.uuid == Maybe.withDefault "" model.session.spForEdit) model.servicePlan |> List.head)
-      False -> Html.text ""
+    spEditForm = if model.session.showEditServicePlan
+      then getSpEditForm (List.filter (\i -> i.uuid == Maybe.withDefault "" model.session.spForEdit) model.servicePlan |> List.head)
+      else Html.text ""
   in
     Html.div [ Attr.class "appDiv" ] (List.append content [spEditForm, confirmForm])
 
-getConfirmDiv: Model -> Html Msg
+getConfirmDiv: O.Model -> Html.Html TO.Msg
 getConfirmDiv model =
   let
-    stUuid = Maybe.withDefault Nothing (ListE.getAt 0 model.session.uuidForConfirmDelete)
-    tdUuid = Maybe.withDefault Nothing (ListE.getAt 1 model.session.uuidForConfirmDelete)
-    sUuid = Maybe.withDefault Nothing (ListE.getAt 2 model.session.uuidForConfirmDelete)
+    stUuid = Maybe.withDefault Nothing (List.getAt 0 model.session.uuidForConfirmDelete)
+    tdUuid = Maybe.withDefault Nothing (List.getAt 1 model.session.uuidForConfirmDelete)
+    sUuid = Maybe.withDefault Nothing (List.getAt 2 model.session.uuidForConfirmDelete)
     event = if sUuid /= Nothing && tdUuid /= Nothing && stUuid /= Nothing then TO.RemoveStuff (Maybe.withDefault "" stUuid) (Maybe.withDefault "" tdUuid) (Maybe.withDefault "" sUuid)
       else if sUuid == Nothing && tdUuid /= Nothing && stUuid /= Nothing then TO.RemoveTodo (Maybe.withDefault "" stUuid) (Maybe.withDefault "" tdUuid)
       else if sUuid == Nothing && tdUuid == Nothing && stUuid /= Nothing then TO.RemoveServicePlan (Maybe.withDefault "" stUuid)
@@ -62,7 +62,7 @@ getConfirmDiv model =
       ]
     else Html.text ""
 
-getFormDiv: Html Msg -> Msg -> Html Msg
+getFormDiv: Html.Html TO.Msg -> TO.Msg -> Html.Html TO.Msg
 getFormDiv subForm event =
   Html.div [ Attr.class "formBG" ][
     Html.div [ Attr.class "formDiv" ] [
@@ -71,13 +71,13 @@ getFormDiv subForm event =
     ]
   ]
 
-getSpEditForm: Maybe O.ServicePlan -> Html Msg
+getSpEditForm: Maybe O.ServicePlan -> Html.Html TO.Msg
 getSpEditForm servicePlan =
   let
     sp = Maybe.withDefault O.getEmptyServicePlan servicePlan
     editForm = Html.div[][
-        Html.div[][ Html.label[ Attr.for "years" ][ Html.text "Jahr(e):" ], Html.input[Attr.id "years", Attr.type_ "number", Attr.value (getStringOrEmptyFromNumber sp.years), Ev.onInput (TO.SetYearInServicePlan sp.uuid)][] ]
-        , Html.div[][ Html.label[ Attr.for "dist" ][ Html.text "Kilometer:" ], Html.input[Attr.id "dist", Attr.type_ "number", Attr.value (getStringOrEmptyFromNumber sp.distance), Ev.onInput (TO.SetDistanceInServicePlan sp.uuid)][] ]
+        Html.div[][ Html.label[ Attr.for "years" ][ Html.text "Jahr(e):" ], Html.input[Attr.id "years", Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.years), Ev.onInput (TO.SetYearInServicePlan sp.uuid)][] ]
+        , Html.div[][ Html.label[ Attr.for "dist" ][ Html.text "Kilometer:" ], Html.input[Attr.id "dist", Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.distance), Ev.onInput (TO.SetDistanceInServicePlan sp.uuid)][] ]
         , Html.div[](
           List.map (\td ->
             Html.div[][
@@ -102,7 +102,7 @@ getSpEditForm servicePlan =
   in
     getFormDiv editForm (TO.ToggleEditServicePlan Nothing)
 
-getKonfigForm: O.Model -> List (Html Msg)
+getKonfigForm: O.Model -> List (Html.Html TO.Msg)
 getKonfigForm model = [
     Html.div [ Attr.class "no-print" ][
       getActionButton "Speichern" True TO.ToggleKonfig Nothing
@@ -129,7 +129,7 @@ getKonfigForm model = [
     ]
   ]
 
-showServiceList: O.ServicePlan -> Html Msg
+showServiceList: O.ServicePlan -> Html.Html TO.Msg
 showServiceList sp =
   Html.li [][
     if sp.years /= Nothing then Html.div[][ Html.text ("Jahre:" ++ DU.getStringOrEmptyFromNumber sp.years) ] else Html.text ""
@@ -138,7 +138,7 @@ showServiceList sp =
     , Html.ul [] (List.map showServiceItem sp.todos)
   ]
 
-getPlanDiv: O.Model -> List (Html Msg)
+getPlanDiv: O.Model -> List (Html.Html TO.Msg)
 getPlanDiv model = [
     Html.div [ Attr.class "no-print" ][
       Html.label [ Attr.for "age" ][ Html.text "Alter (Jahre):" ]
@@ -163,7 +163,7 @@ getPlanDiv model = [
     ], getServicePlan model
   ]
 
-getServicePlan: O.Model -> Html Msg
+getServicePlan: O.Model -> Html.Html TO.Msg
 getServicePlan model =
   let
     serviceList = DU.getActServicePlan (model.session.currentYear - model.config.buyingYear) model.session.roundedDist model.servicePlan
@@ -175,7 +175,7 @@ getServicePlan model =
         ]
       else Html.text ""
 
-showServiceItem: O.Todo -> Html Msg
+showServiceItem: O.Todo -> Html.Html TO.Msg
 showServiceItem todo =
   Html.li [][
     Html.text todo.name

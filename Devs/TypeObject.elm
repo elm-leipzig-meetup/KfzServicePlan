@@ -2,7 +2,7 @@ module Devs.TypeObject exposing (..)
 
 import Time exposing (Posix)
 
-import Devs.Objects as O exposing (..)
+import Devs.Objects exposing (..)
 
 -- Types
 
