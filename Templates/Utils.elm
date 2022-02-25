@@ -1,13 +1,15 @@
-module Templates.Utils exposing ( getServiceApp )
+module Templates.Utils exposing ( .. )
 
 import Html
 import Html.Attributes as Attr
 import Html.Events as Ev
 import List.Extra as List
+import UUID
 
 import Devs.Objects as O
 import Devs.TypeObject as TO
 import Devs.Utils as DU
+import UUID
 
 getActionButton: String -> Bool -> TO.Msg -> Maybe String -> Html.Html TO.Msg
 getActionButton label showBtn event titel =
@@ -43,24 +45,25 @@ getConfirmDiv model =
     stUuid = Maybe.withDefault Nothing (List.getAt 0 model.session.uuidForConfirmDelete)
     tdUuid = Maybe.withDefault Nothing (List.getAt 1 model.session.uuidForConfirmDelete)
     sUuid = Maybe.withDefault Nothing (List.getAt 2 model.session.uuidForConfirmDelete)
-    event = if sUuid /= Nothing && tdUuid /= Nothing && stUuid /= Nothing then TO.RemoveStuff (Maybe.withDefault "" stUuid) (Maybe.withDefault "" tdUuid) (Maybe.withDefault "" sUuid)
-      else if sUuid == Nothing && tdUuid /= Nothing && stUuid /= Nothing then TO.RemoveTodo (Maybe.withDefault "" stUuid) (Maybe.withDefault "" tdUuid)
-      else if sUuid == Nothing && tdUuid == Nothing && stUuid /= Nothing then TO.RemoveServicePlan (Maybe.withDefault "" stUuid)
-      else TO.NoOp
+    event = if sUuid /= Nothing && tdUuid /= Nothing && stUuid /= Nothing then Just ((TO.GotServicePlanMsg << TO.RemoveStuff (Maybe.withDefault "" stUuid) (Maybe.withDefault "" tdUuid)) (Maybe.withDefault "" sUuid))
+      else if sUuid == Nothing && tdUuid /= Nothing && stUuid /= Nothing then Just ((TO.GotServicePlanMsg << TO.RemoveTodo (Maybe.withDefault "" stUuid)) (Maybe.withDefault "" tdUuid))
+      else if sUuid == Nothing && tdUuid == Nothing && stUuid /= Nothing then Just ((TO.GotServicePlanMsg << TO.RemoveServicePlan) (Maybe.withDefault "" stUuid))
+      else Nothing
     msg = if sUuid /= Nothing && tdUuid /= Nothing && stUuid /= Nothing then "Soll der Materialeintrag gelöscht werden?"
       else if sUuid == Nothing && tdUuid /= Nothing && stUuid /= Nothing then "Soll der Arbeitsschritt gelöscht werden?"
       else if sUuid == Nothing && tdUuid == Nothing && stUuid /= Nothing then "Soll die Serviceaufgabe gelöscht werden?"
       else "Es gibt nichts zum Löschen!"
   in
-    if event /= TO.NoOp then
-      Html.div [ Attr.class "formBG" ][
-        Html.div [ Attr.class "confirmDiv" ] [
-          Html.div[][ Html.text msg ]
-          , getActionButton "Ok" True event Nothing
-          , getActionButton "Abbrechen" True TO.HideConfirm Nothing
+    case event of
+      Just e -> 
+        Html.div [ Attr.class "formBG" ][
+          Html.div [ Attr.class "confirmDiv" ] [
+            Html.div[][ Html.text msg ]
+            , getActionButton "Ok" True e Nothing
+            , getActionButton "Abbrechen" True TO.HideConfirm Nothing
+          ]
         ]
-      ]
-    else Html.text ""
+      Nothing -> Html.text ""
 
 getFormDiv: Html.Html TO.Msg -> TO.Msg -> Html.Html TO.Msg
 getFormDiv subForm event =
@@ -76,34 +79,35 @@ getSpEditForm servicePlan =
   let
     sp = Maybe.withDefault O.getEmptyServicePlan servicePlan
     editForm = Html.div[][
-        Html.div[][ Html.label[ Attr.for "years" ][ Html.text "Jahr(e):" ], Html.input[Attr.id "years", Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.years), Ev.onInput (TO.SetYearInServicePlan sp.uuid)][] ]
-        , Html.div[][ Html.label[ Attr.for "dist" ][ Html.text "Kilometer:" ], Html.input[Attr.id "dist", Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.distance), Ev.onInput (TO.SetDistanceInServicePlan sp.uuid)][] ]
+        Html.div[][ Html.label[ Attr.for "years" ][ Html.text "Jahr(e):" ], Html.input[Attr.id "years", Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.years), Ev.onInput (TO.GotServicePlanMsg << TO.SetYearInServicePlan sp.uuid)][] ]
+        , Html.div[][ Html.label[ Attr.for "dist" ][ Html.text "Kilometer:" ], Html.input[Attr.id "dist", Attr.type_ "number", Attr.value (DU.getStringOrEmptyFromNumber sp.distance), Ev.onInput (TO.GotServicePlanMsg << TO.SetDistanceInServicePlan sp.uuid)][] ]
         , Html.div[](
           List.map (\td ->
             Html.div[][
               Html.div[][
                 getActionButton "-" True (TO.ShowConfirm (Just sp.uuid, Just td.uuid, Nothing)) Nothing
-                , Html.input[Attr.style "width" "93%", Attr.id ("todo" ++ td.uuid), Attr.value td.name, Ev.onInput (TO.SetDotoName sp.uuid td.uuid)][]
+                , Html.input[Attr.style "width" "93%", Attr.id ("todo" ++ td.uuid), Attr.value td.name, Ev.onInput (TO.GotServicePlanMsg << (TO.SetDotoName sp.uuid td.uuid))][]
                 , Html.div[](
                   List.map (\stuff ->
                     Html.div[][
                       Html.span[ Attr.style "margin" "15px" ][]
                       , getActionButton "-" True (TO.ShowConfirm (Just sp.uuid, Just td.uuid, Just stuff.uuid)) Nothing
-                      , Html.input[Attr.style "width" "89%", Attr.id ("stuff" ++ stuff.uuid), Attr.value stuff.name, Ev.onInput (TO.SetStuffName sp.uuid td.uuid stuff.uuid)][]
+                      , Html.input[Attr.style "width" "89%", Attr.id ("stuff" ++ stuff.uuid), Attr.value stuff.name, Ev.onInput (TO.GotServicePlanMsg << TO.SetStuffName sp.uuid td.uuid stuff.uuid)][]
                     ]
                   ) td.stuff
                 )
-              ], Html.div[][ Html.span[ Attr.style "margin" "15px" ][], getActionButton "+" True (TO.AddStuff sp.uuid td.uuid) (Just "Neues Material hinzufügen") ]
+              ], Html.div[][ Html.span[ Attr.style "margin" "15px" ][], getActionButton "+" True ((TO.GotServicePlanMsg << TO.AddStuff sp.uuid) td.uuid) (Just "Neues Material hinzufügen") ]
             ]
           ) sp.todos
         )
-        , Html.div[][ getActionButton "+" True (TO.AddTodo sp.uuid) (Just "Neue Aufgabe hinzufügen") ]
+        , Html.div[][ getActionButton "+" True ((TO.GotServicePlanMsg << TO.AddTodo) sp.uuid) (Just "Neue Aufgabe hinzufügen") ]
       ]
   in
     getFormDiv editForm (TO.ToggleEditServicePlan Nothing)
 
 getKonfigForm: O.Model -> List (Html.Html TO.Msg)
-getKonfigForm model = [
+getKonfigForm model = 
+  [
     Html.div [ Attr.class "no-print" ][
       getActionButton "Speichern" True TO.ToggleKonfig Nothing
     ], Html.div [ Attr.class "no-print" ][
@@ -123,7 +127,8 @@ getKonfigForm model = [
         , Ev.onInput TO.SetDistance
       ][ ]
     ]
-    , Html.div [][ getActionButton "+" True TO.AddServicePlan (Just "Neuen Serviceschritt hinzufügen") ]
+--    , Html.div [][ getActionButton "+" True (TO.GotServicePlanMsg << TO.AddServicePlan) (Just "Neuen Serviceschritt hinzufügen") ]
+    , Html.div [][ getActionButton "+" True ((TO.GotServicePlanMsg << TO.AddServicePlan) (UUID.toString UUID.nil)) (Just "Neuen Serviceschritt hinzufügen") ]
     , Html.div [ Attr.class "no-print, configListDiv" ][
       Html.ul [] (List.map showServiceList model.servicePlan)
     ]

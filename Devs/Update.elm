@@ -1,10 +1,9 @@
 module Devs.Update exposing (..)
 
 import Time as T
-import List.Extra as ListE
+import List.Extra as List
 import UUID
 import Random
---import Task
 
 --import Debug exposing (log)
 
@@ -50,76 +49,85 @@ update msg model =
             session = model.session
           in
             ( { model | session = {session | uuidForConfirmDelete = [] }}, Cmd.none )
-        TO.AddServicePlan ->
-          let
-            ( newUuid, newSeed ) = Random.step UUID.generator (DU.getSeed model)
-            session = model.session
-            emptyServicePlan = O.getEmptyServicePlan
-          in
-            ( { model | servicePlan=List.append model.servicePlan [{emptyServicePlan | uuid = UUID.toString newUuid}], session = {session | currentSeed=Just newSeed } } , Cmd.none)
-        TO.RemoveServicePlan uuid ->
-          let
-            session = model.session
-          in
-            ( { model | servicePlan=List.filter (\i -> i.uuid /= uuid) model.servicePlan, session = {session | uuidForConfirmDelete = [] } }, Cmd.none)
-        TO.SetYearInServicePlan spUuid val ->
-          let
-            spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | years = String.toInt val}) model.servicePlan
-          in
-            ( { model | servicePlan=newSpList } , Cmd.none)
-        TO.SetDistanceInServicePlan spUuid val ->
-          let
-            spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | distance = String.toInt val}) model.servicePlan
-          in
-            ( { model | servicePlan=newSpList } , Cmd.none)
-        TO.SetDotoName spUuid tdUuid val ->
-          let
-            spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
-            newTodos = ListE.updateIf (\item -> item.uuid == tdUuid) (\item -> { item | name = val}) spForEdit.todos
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
-          in
-            ( { model | servicePlan=newSpList } , Cmd.none)
-        TO.SetStuffName spUuid tdUuid sUuid val ->
-          let
-            spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
-            tdForEdit = List.filter (\i -> i.uuid == tdUuid) spForEdit.todos |> List.head |> Maybe.withDefault O.getEmptyTodo
-            newStuffs = ListE.updateIf (\item -> item.uuid == sUuid) (\item -> { item | name = val}) tdForEdit.stuff
-            newTodos = ListE.updateIf (\item -> item.uuid == tdUuid) (\_ -> { tdForEdit | stuff = newStuffs}) spForEdit.todos
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
-          in
-            ( { model | servicePlan=newSpList } , Cmd.none)
-        TO.AddTodo spUuid ->
-          let
-            ( newUuid, newSeed ) = Random.step UUID.generator (DU.getSeed model)
-            emptyTodo = O.getEmptyTodo
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\item -> { item | todos = List.append item.todos [{ emptyTodo | uuid = UUID.toString newUuid }]}) model.servicePlan
-            session = model.session
-          in
-            ( { model | servicePlan=newSpList, session = {session | currentSeed=Just newSeed } } , Cmd.none)
-        TO.AddStuff spUuid tdUuid ->
-          let
-            ( newUuid, newSeed ) = Random.step UUID.generator (DU.getSeed model)
-            spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
-            emptyStuff = O.getEmptyStuff
-            newTodos = ListE.updateIf (\item -> item.uuid == tdUuid) (\item -> { item | stuff = List.append item.stuff [{ emptyStuff | uuid = UUID.toString newUuid }]}) spForEdit.todos
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
-            session = model.session
-          in
-            ( { model | servicePlan=newSpList, session = {session | currentSeed=Just newSeed } } , Cmd.none)
-        TO.RemoveTodo spUuid tdUuid ->
-          let
-            session = model.session
-            spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = List.filter (\i -> i.uuid /= tdUuid) spForEdit.todos}) model.servicePlan
-          in
-            ( { model | servicePlan=newSpList, session = {session | uuidForConfirmDelete = [] } } , Cmd.none)
-        TO.RemoveStuff spUuid tdUuid sUuid ->
-          let
-            session = model.session
-            spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
-            newTodos = ListE.updateIf (\item -> item.uuid == tdUuid) (\item -> { item | stuff = List.filter (\i -> i.uuid /= sUuid) item.stuff}) spForEdit.todos
-            newSpList = ListE.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
-          in
-            ( { model | servicePlan=newSpList, session = {session | uuidForConfirmDelete = [] } } , Cmd.none )
+        --TO.GotServicePlanMsg _ -> (model, Cmd.none)
+        TO.GotServicePlanMsg subMsg -> updateWith TO.GotServicePlanMsg (updateServiceplan subMsg model)
+
+updateWith : (subMsg -> TO.Msg) -> ( O.Model, Cmd subMsg ) -> ( O.Model, Cmd TO.Msg )
+updateWith toMsg ( subModel, subCmd ) = ( subModel, Cmd.map toMsg subCmd )
+
+updateServiceplan : TO.MsgSP -> O.Model -> ( O.Model, Cmd TO.MsgSP )
+updateServiceplan msg model = 
+  case msg of
+    TO.AddServicePlan _ ->
+      let
+        ( newUuid, newSeed ) = Random.step UUID.generator (DU.getSeed model)
+        session = model.session
+        emptyServicePlan = O.getEmptyServicePlan
+      in
+        ( { model | servicePlan=List.append model.servicePlan [{emptyServicePlan | uuid = UUID.toString newUuid}], session = {session | currentSeed=Just newSeed } } , Cmd.none)
+    TO.RemoveServicePlan uuid ->
+      let
+        session = model.session
+      in
+        ( { model | servicePlan=List.filter (\i -> i.uuid /= uuid) model.servicePlan, session = {session | uuidForConfirmDelete = [] } }, Cmd.none)
+    TO.SetYearInServicePlan spUuid val ->
+      let
+        spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | years = String.toInt val}) model.servicePlan
+      in
+        ( { model | servicePlan=newSpList } , Cmd.none)
+    TO.SetDistanceInServicePlan spUuid val ->
+      let
+        spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | distance = String.toInt val}) model.servicePlan
+      in
+        ( { model | servicePlan=newSpList } , Cmd.none)
+    TO.SetDotoName spUuid tdUuid val ->
+      let
+        spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
+        newTodos = List.updateIf (\item -> item.uuid == tdUuid) (\item -> { item | name = val}) spForEdit.todos
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
+      in
+        ( { model | servicePlan=newSpList } , Cmd.none)
+    TO.SetStuffName spUuid tdUuid sUuid val ->
+      let
+        spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
+        tdForEdit = List.filter (\i -> i.uuid == tdUuid) spForEdit.todos |> List.head |> Maybe.withDefault O.getEmptyTodo
+        newStuffs = List.updateIf (\item -> item.uuid == sUuid) (\item -> { item | name = val}) tdForEdit.stuff
+        newTodos = List.updateIf (\item -> item.uuid == tdUuid) (\_ -> { tdForEdit | stuff = newStuffs}) spForEdit.todos
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
+      in
+        ( { model | servicePlan=newSpList } , Cmd.none)
+    TO.AddTodo spUuid ->
+      let
+        ( newUuid, newSeed ) = Random.step UUID.generator (DU.getSeed model)
+        emptyTodo = O.getEmptyTodo
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\item -> { item | todos = List.append item.todos [{ emptyTodo | uuid = UUID.toString newUuid }]}) model.servicePlan
+        session = model.session
+      in
+        ( { model | servicePlan=newSpList, session = {session | currentSeed=Just newSeed } } , Cmd.none)
+    TO.AddStuff spUuid tdUuid ->
+      let
+        ( newUuid, newSeed ) = Random.step UUID.generator (DU.getSeed model)
+        spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
+        emptyStuff = O.getEmptyStuff
+        newTodos = List.updateIf (\item -> item.uuid == tdUuid) (\item -> { item | stuff = List.append item.stuff [{ emptyStuff | uuid = UUID.toString newUuid }]}) spForEdit.todos
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
+        session = model.session
+      in
+        ( { model | servicePlan=newSpList, session = {session | currentSeed=Just newSeed } } , Cmd.none)
+    TO.RemoveTodo spUuid tdUuid ->
+      let
+        session = model.session
+        spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = List.filter (\i -> i.uuid /= tdUuid) spForEdit.todos}) model.servicePlan
+      in
+        ( { model | servicePlan=newSpList, session = {session | uuidForConfirmDelete = [] } } , Cmd.none)
+    TO.RemoveStuff spUuid tdUuid sUuid ->
+      let
+        session = model.session
+        spForEdit = List.filter (\i -> i.uuid == spUuid) model.servicePlan |> List.head |> Maybe.withDefault O.getEmptyServicePlan
+        newTodos = List.updateIf (\item -> item.uuid == tdUuid) (\item -> { item | stuff = List.filter (\i -> i.uuid /= sUuid) item.stuff}) spForEdit.todos
+        newSpList = List.updateIf (\item -> item.uuid == spUuid) (\_ -> { spForEdit | todos = newTodos}) model.servicePlan
+      in
+        ( { model | servicePlan=newSpList, session = {session | uuidForConfirmDelete = [] } } , Cmd.none )

@@ -2,8 +2,8 @@ module ServiceR1200R exposing (..)
 
 import Devs.Ports as P
 
-import Browser exposing (..)
-import Html exposing (..)
+import Browser
+import Html
 import Time as T
 import Task
 
@@ -17,7 +17,7 @@ import Templates.Utils as TU
 -- Methods
 
 -- View
-view : O.Model -> Html TO.Msg
+view : O.Model -> Html.Html TO.Msg
 view model = TU.getServiceApp model
 
 main : Program () O.Model TO.Msg

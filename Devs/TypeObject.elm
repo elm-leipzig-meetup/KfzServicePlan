@@ -19,7 +19,10 @@ type Msg =
   | ToggleEditServicePlan (Maybe String)
   | ShowConfirm (Maybe String, Maybe String, Maybe String)
   | HideConfirm
-  | AddServicePlan
+  | GotServicePlanMsg MsgSP
+
+type MsgSP =
+  AddServicePlan String
   | RemoveServicePlan String
   | SetYearInServicePlan String String
   | SetDistanceInServicePlan String String
